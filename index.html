@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>K0IRO DMR Digital Radio</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: Arial, sans-serif;
+      background-color: #ffffff;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .title-bar {
+      background-color: #30638e;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      position: relative;
+    }
+
+    .title-left a {
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+
+    .title-left a:hover {
+      text-decoration: underline;
+    }
+
+    .title-center {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 1.6rem;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .controls-bar {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 0.5rem 2rem;
+      background-color: #f2f2f2;
+      gap: 1rem;
+      font-size: 0.95rem;
+    }
+
+    .controls-bar button {
+      background-color: #30638e;
+      color: white;
+      border: none;
+      padding: 0.4rem 0.8rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .controls-bar button:hover {
+      background-color: #214d6a;
+    }
+
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+      gap: 2.5rem;
+    }
+
+    .camera-block {
+      text-align: center;
+    }
+
+    .camera-block h2 {
+      margin-bottom: 0.5rem;
+      color: #30638e;
+      font-size: 1.2rem;
+    }
+
+    .camera-block img {
+      width: 400px;
+      max-width: 90vw;
+      border: 2px solid #ccc;
+      border-radius: 6px;
+      transition: transform 0.2s ease;
+    }
+
+    .camera-block a:hover img {
+      transform: scale(1.03);
+      border-color: #30638e;
+    }
+
+    .site-footer {
+      background-color: #403f4c;
+      color: #ffffff;
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 600px) {
+      .title-bar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .title-center {
+        position: static;
+        transform: none;
+        margin-top: 0.5rem;
+      }
+
+      .controls-bar {
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0.3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="title-bar">
+    <div class="title-left">
+      <a href="https://www.k0iro.com">Iowa Radio Operators | K0IRO</a>
+    </div>
+    <div class="title-center">DMR Digital Radio</div>
+  </div>
+
+<div class="main-content">
+  <h2 style="margin-bottom: 1rem;">K0IRO DMR Repeater Information</h2>
+
+  <p style="max-width: 900px; margin: 0 auto 1.5rem auto; font-size: 1rem; line-height: 1.5;">
+    Our DMR repeater is now fully online and available for use. We are excited to bring expanded
+    digital voice capabilities to the Iowa Radio Operators community and look forward to its
+    continued growth and activity on the air.
+  </p>
+
+  <p style="max-width: 900px; margin: 0 auto 1.5rem auto; font-size: 1rem; line-height: 1.5;">
+    The repeater is fully integrated with our monitoring tools. Operators can
+    view live activity, callsigns, talkgroups, signal quality, and system performance through our
+    Digital Last Heard dashboard. This provides excellent visibility into repeater usage and helps
+    operators understand current traffic and system behavior.
+  </p>
+
+  <p style="max-width: 900px; margin: 0 auto 2rem auto; font-size: 1rem; line-height: 1.5;">
+    You can access the live dashboard here:<br>
+    <a href="/lastheard/index.html" style="color: #30638e; font-weight: bold; text-decoration: none;">
+      View the Digital Last Heard Page
+    </a>
+  </p>
+
+  <div class="table-container">
+    <h3 style="margin-bottom: 0.5rem;">Hardware & Configuration</h3>
+    <table>
+      <tbody>
+        <tr>
+          <th>Repeater</th>
+          <td>BridgeCom dual‑mode (Analog FM + DMR)</td>
+        </tr>
+        <tr>
+          <th>Digital Controller</th>
+          <td>Repeater Builder STM32‑DVM MMDVM Hat</td>
+        </tr>
+        <tr>
+          <th>Time Slots</th>
+          <td>Dual‑slot MMDVM</td>
+        </tr>
+        <tr>
+          <th>Slot Behavior</th>
+          <td>Time Slot 1 and Time Slot 2 are linked together</td>
+        </tr>
+        <tr>
+          <th>DMR Color Code</th>
+          <td>2</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="table-container" style="margin-top: 2rem;">
+    <h3 style="margin-bottom: 0.5rem;">Frequencies</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Mode</th>
+          <th>Output</th>
+          <th>Input</th>
+          <th>Settings</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Analog FM</td>
+          <td>442.4250 MHz</td>
+          <td>447.4250 MHz</td>
+          <td>PL 151.4 Hz (RX & TX)</td>
+        </tr>
+        <tr>
+          <td>DMR</td>
+          <td>442.4250 MHz</td>
+          <td>447.4250 MHz</td>
+          <td>Color Code 2</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="table-container" style="margin-top: 2rem;">
+    <h3 style="margin-bottom: 0.5rem;">DMR IDs</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Description</th>
+          <th>ID</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Repeater ID</td>
+          <td style="text-align: left;">3215800</td>
+        </tr>
+        <tr>
+          <td>Alternate / Group Call ID</td>
+          <td style="text-align: left;">314757</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="table-container" style="margin-top: 2rem;">
+    <h3 style="margin-bottom: 0.5rem;">Static Talkgroups (Full‑Time)</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Talkgroup ID</th>
+          <th>Name</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>3119</td>
+          <td>Iowa Statewide</td>
+          <td>Primary statewide calling talkgroup</td>
+        </tr>
+        <tr>
+          <td>31191</td>
+          <td>Des Moines</td>
+          <td>Central Iowa regional</td>
+        </tr>
+        <tr>
+          <td>31194</td>
+          <td>SW Iowa</td>
+          <td>Southwest Iowa / ARES District 4</td>
+        </tr>
+        <tr>
+          <td>31198</td>
+          <td>DVN NWS</td>
+          <td>Davenport National Weather Service</td>
+        </tr>
+        <tr>
+          <td>31199</td>
+          <td>DMX NWS</td>
+          <td>Des Moines NWS / SEOC</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Repeater Image at the Very End -->
+  <div style="width: 100%; max-width: 900px; margin: 2rem auto 0 auto;">
+    <img src="Mingo-DMR-Repeater.png" alt="K0IRO DMR Repeater"
+         style="width: 100%; height: auto; border: 1px solid #ccc;">
+  </div>
+</div>
+
+</body>
+</html>

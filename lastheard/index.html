@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>K0IRO DMR Digital Radio</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: Arial, sans-serif;
+      background-color: #ffffff;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .title-bar {
+      background-color: #30638e;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      position: relative;
+    }
+
+    .title-left a {
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+
+    .title-left a:hover {
+      text-decoration: underline;
+    }
+
+    .title-center {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 1.6rem;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .refresh-button {
+      background-color: #ffffff;
+      color: #30638e;
+      border: 2px solid #ffffff;
+      padding: 0.4rem 0.8rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: bold;
+    }
+
+    .refresh-button:hover {
+      background-color: #e0e0e0;
+    }
+
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+    }
+
+    .update-info {
+      margin: 1rem 0;
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    .table-container {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+
+    th {
+      background-color: #f2f2f2;
+      font-weight: bold;
+      padding: 8px 10px;
+      border: 1px solid #ccc;
+      text-align: left;
+    }
+
+    td {
+      padding: 8px 10px;
+      border: 1px solid #ccc;
+      text-align: left;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    tr:nth-child(odd) {
+      background-color: #ffffff;
+    }
+
+    .loss-cell.green, .ber-cell.green {
+      background-color: #d4edda;
+      color: #155724;
+      font-weight: bold;
+    }
+
+    .loss-cell.yellow, .ber-cell.yellow {
+      background-color: #fff3cd;
+      color: #856404;
+      font-weight: bold;
+    }
+
+    .loss-cell.red, .ber-cell.red {
+      background-color: #f8d7da;
+      color: #721c24;
+      font-weight: bold;
+    }
+
+    @media (max-width: 600px) {
+      .title-bar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .title-center {
+        position: static;
+        transform: none;
+        margin-top: 0.5rem;
+      }
+
+      .refresh-button {
+        align-self: flex-end;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="title-bar">
+    <div class="title-left">
+      <a href="https://www.k0iro.com">Iowa Radio Operators | K0IRO</a>
+    </div>
+    <div class="title-center">Digital Last Heard</div>
+    <button class="refresh-button" onclick="fetchLastHeard()">Refresh</button>
+  </div>
+
+  <div class="main-content">
+    <div class="update-info" id="lastUpdated">Last updated: --</div>
+    <div class="table-container">
+      <table id="lastHeardTable">
+        <thead>
+          <tr>
+            <th>Time (UTC)</th>
+            <th>Mode</th>
+            <th>Callsign</th>
+            <th>Target</th>
+            <th>Source</th>
+            <th>Duration</th>
+            <th>Loss</th>
+            <th>BER</th>
+            <th>RSSI</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    function classify(value, type) {
+      if (!value || value === '0%' || value === '0.0%') return `${type}-cell green`;
+      const num = parseFloat(value.replace('%', ''));
+      if (isNaN(num)) return '';
+      if (num <= 1) return `${type}-cell yellow`;
+      return `${type}-cell red`;
+    }
+
+    function updateTimestamp() {
+      const now = new Date();
+      const timeString = now.toLocaleTimeString();
+      document.getElementById('lastUpdated').textContent = 'Last updated: ' + timeString;
+    }
+
+    async function fetchLastHeard() {
+      try {
+        const response = await fetch('/pistar/api/last_heard.php?t=' + Date.now(), { cache: 'no-store' });
+        const data = await response.json();
+        const tbody = document.querySelector('#lastHeardTable tbody');
+        tbody.innerHTML = '';
+
+        data.forEach(entry => {
+          const lossClass = classify(entry.loss, 'loss');
+          const berClass = classify(entry.bit_error_rate, 'ber');
+
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${entry.time_utc || ''}</td>
+            <td>${entry.mode || ''}</td>
+            <td>${entry.callsign || ''}</td>
+            <td>${entry.target || ''}</td>
+            <td>${entry.src || ''}</td>
+            <td>${entry.duration || ''}</td>
+            <td class="${lossClass}">${entry.loss || ''}</td>
+            <td class="${berClass}">${entry.bit_error_rate || ''}</td>
+            <td>${entry.rssi || ''}</td>
+          `;
+          tbody.appendChild(row);
+        });
+
+        updateTimestamp();
+      } catch (err) {
+        console.error('Error fetching last heard:', err);
+      }
+    }
+
+    setInterval(fetchLastHeard, 3000); // auto-refresh every 3 seconds
+    fetchLastHeard(); // initial load
+  </script>
+</body>
+</html>
